@@ -1,138 +1,101 @@
-import React from "react";
-
-import { IoMdSearch } from "react-icons/io";
-import { FaCartShopping } from "react-icons/fa6";
-import { FaCaretDown } from "react-icons/fa";
-import DarkMode from "./DarkMode";
-import { FiShoppingBag } from "react-icons/fi";
+import React, { useState } from 'react';
+import { IoMdSearch } from 'react-icons/io';
+import { FaCartShopping } from 'react-icons/fa6';
+import DarkMode from './DarkMode';
+import { FiMenu, FiShoppingBag, FiX } from 'react-icons/fi';
+import { Link, NavLink } from 'react-router-dom';
 
 const Menu = [
-  {
-    id: 1,
-    name: "Home",
-    link: "/#",
-  },
-  {
-    id: 2,
-    name: "Top Rated",
-    link: "/#services",
-  },
-  {
-    id: 3,
-    name: "Kids Wear",
-    link: "/#",
-  },
-  {
-    id: 3,
-    name: "Mens Wear",
-    link: "/#",
-  },
-  {
-    id: 3,
-    name: "Electronics",
-    link: "/#",
-  },
+  { id: 1, name: 'Home', link: '/' },
+  { id: 2, name: 'About', link: '/about' },
+  { id: 3, name: 'Cart', link: '/cart' },
 ];
 
-const DropdownLinks = [
-  {
-    id: 1,
-    name: "Trending Products",
-    link: "/#",
-  },
-  {
-    id: 2,
-    name: "Best Selling",
-    link: "/#",
-  },
-  {
-    id: 3,
-    name: "Top Rated",
-    link: "/#",
-  },
-];
+const Navbar = ({ handleOrderPopup, cartCount }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
-const Navbar = ({ handleOrderPopup }) => {
   return (
-    <div className="shadow-md bg-white dark:bg-slate-800 dark:text-white duration-200 relative z-40">
-      {/* upper Navbar */}
+    <div className="relative z-40 bg-white shadow-md duration-200 dark:bg-slate-800 dark:text-white">
       <div className="bg-primary/40 py-2">
-        <div className="container flex justify-between items-center">
+        <div className="container flex items-center justify-between">
           <div>
-            <a href="#" className="font-bold text-xl items-center flex gap-1">
+            <Link to="/" className="flex items-center gap-1 text-xl font-bold">
               <FiShoppingBag size="30" />
-              ShopMe
-            </a>
+              E.Com
+            </Link>
           </div>
 
-          {/* search bar */}
-          <div className="flex justify-between items-center gap-4">
-            <div className="relative group hidden sm:block">
+          <div className="flex items-center gap-4">
+            <div className="group relative hidden sm:block">
               <input
                 type="text"
                 placeholder="Search"
-                className="w-[200px] sm:w-[200px] group-hover:w-[300px] transition-all duration-300 rounded-lg border border-gray-300 py-1 px-2
-                text-sm focus:outline-none focus:border-1 focus:border-[var(--primary)] dark:border-gray-500 dark:bg-slate-800 "
+                className="w-[200px] rounded-lg border border-gray-300 px-2 py-1 text-sm transition-all duration-300 group-hover:w-[300px] focus:border-[var(--primary)] focus:outline-none dark:border-gray-500 dark:bg-slate-800 sm:w-[200px]"
               />
-              <IoMdSearch className="text-slate-800 group-hover:text-[var(--primary)] absolute top-1/2 -translate-y-1/2 right-3" />
+              <IoMdSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-800 group-hover:text-[var(--primary)]" />
             </div>
 
-            {/* order button */}
             <button
-              onClick={() => handleOrderPopup()}
-              className="bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] transition-all duration-200 text-white  py-1 px-4 rounded-full flex items-center gap-3 group"
+              onClick={handleOrderPopup}
+              className="flex items-center gap-3 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] px-4 py-1 text-white transition-all duration-200"
             >
-              <span className="group-hover:block hidden transition-all duration-200">
-                Order
-              </span>
-              <FaCartShopping className="text-xl text-white drop-shadow-sm cursor-pointer" />
+              <span className="hidden transition-all duration-200 group-hover:block">Cart</span>
+              <div className="relative">
+                <FaCartShopping className="cursor-pointer text-xl text-white drop-shadow-sm" />
+                <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-xs font-semibold text-[var(--primary)]">
+                  {cartCount}
+                </span>
+              </div>
             </button>
 
-            {/* Darkmode Switch */}
             <div>
               <DarkMode />
             </div>
+
+            <button
+              type="button"
+              aria-label="Toggle navigation"
+              className="rounded-full border border-gray-300 p-2 text-xl sm:hidden"
+              onClick={() => setIsOpen((prev) => !prev)}
+            >
+              {isOpen ? <FiX /> : <FiMenu />}
+            </button>
           </div>
         </div>
       </div>
-      {/* lower Navbar */}
-      <div data-aos="zoom-in" className="flex justify-center">
-        <ul className="sm:flex hidden items-center gap-4">
+
+      <div data-aos="zoom-in" className="hidden justify-center sm:flex">
+        <ul className="flex items-center gap-4">
           {Menu.map((data) => (
             <li key={data.id}>
-              <a
-                href={data.link}
-                className="inline-block px-4 hover:text-[var(--primary)] duration-200"
+              <NavLink
+                to={data.link}
+                className={({ isActive }) => `inline-block px-4 duration-200 ${isActive ? 'text-[var(--primary)]' : 'hover:text-[var(--primary)]'}`}
               >
                 {data.name}
-              </a>
+              </NavLink>
             </li>
           ))}
-          {/* Simple Dropdown and Links */}
-          <li className="group relative cursor-pointer">
-            <a href="#" className="flex items-center gap-[2px] py-2">
-              Trending Products
-              <span>
-                <FaCaretDown className="transition-all duration-200 group-hover:rotate-180" />
-              </span>
-            </a>
-            <div className="absolute z-[9999] hidden group-hover:block w-[200px] rounded-md bg-white p-2 text-black shadow-md">
-              <ul>
-                {DropdownLinks.map((data) => (
-                  <li key={data.id}>
-                    <a
-                      href={data.link}
-                      className="inline-block w-full rounded-md p-2 hover:bg-[var(--primary)]/20 "
-                    >
-                      {data.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </li>
         </ul>
       </div>
+
+      {isOpen && (
+        <div className="border-t border-gray-200 bg-white px-4 py-3 sm:hidden dark:border-gray-700 dark:bg-slate-800">
+          <ul className="space-y-2">
+            {Menu.map((data) => (
+              <li key={data.id}>
+                <NavLink
+                  to={data.link}
+                  onClick={() => setIsOpen(false)}
+                  className={({ isActive }) => `block rounded-lg px-3 py-2 text-sm font-medium ${isActive ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                >
+                  {data.name}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
